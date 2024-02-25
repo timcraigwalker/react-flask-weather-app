@@ -1,8 +1,6 @@
-from flask import Flask
 import requests
 
-app = Flask("react-flask-weather-app")
-app.config.from_object("config")
+from app import app
 
 
 @app.route("/api/cities/", defaults={"name_prefix": ""})
