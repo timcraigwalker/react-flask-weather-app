@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
+import requests
 
 from models import db, migrate, User
 
@@ -83,3 +84,37 @@ def logout():
     logout_user()
 
     return jsonify({})
+
+
+@app.route("/api/cities/", methods=["GET"], defaults={"name_prefix": ""})
+@app.route("/api/cities/<name_prefix>", methods=["GET"])
+@login_required
+def cities(name_prefix):
+    url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
+
+    params = {"maxPopulation": "1000000", "namePrefix": name_prefix}
+
+    headers = {
+        "X-RapidAPI-Key": app.config["RAPID_API_KEY"],
+        "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    return response.json()
+
+
+@app.route("/api/weather/<latitude>/<longitude>", methods=["GET"])
+@login_required
+def weather(latitude, longitude):
+    url = "https://api.openweathermap.org/data/2.5/weather"
+
+    params = {
+        "appid": app.config["OPENWEATHER_API_KEY"],
+        "lat": latitude,
+        "lon": longitude
+    }
+
+    response = requests.get(url, params=params)
+
+    return response.json()
