@@ -1,7 +1,10 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from uuid import uuid4
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 def create_uuid():
@@ -13,3 +16,4 @@ class User(db.Model):
     id = db.Column(db.String(32), primary_key=True, unique=True, default=create_uuid)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.Text, nullable=False)
+    last_login = db.Column(db.DateTime(), default=datetime.utcnow)

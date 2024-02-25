@@ -1,7 +1,8 @@
+from datetime import datetime
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 
-from models import db, User
+from models import db, migrate, User
 
 app = Flask("react-flask-weather-app")
 app.config.from_object("config")
@@ -12,6 +13,7 @@ if app.config["FLASK_DEBUG"]:
 
 bcrypt = Bcrypt(app)
 db.init_app(app)
+migrate.init_app(app, db)
 
 with app.app_context():
     db.create_all()
@@ -61,6 +63,10 @@ def login():
 
     # update session user
     session["user_id"] = user.id
+
+    # update user's last login time
+    user.last_login = datetime.utcnow()
+    db.session.commit()
 
     return jsonify({
         "id": user.id,
