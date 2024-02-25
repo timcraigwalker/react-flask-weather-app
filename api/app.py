@@ -1,6 +1,6 @@
-from datetime import datetime
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 from models import db, migrate, User
 
@@ -11,12 +11,20 @@ if app.config["FLASK_DEBUG"]:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
 
+login_manager = LoginManager()
+
 bcrypt = Bcrypt(app)
 db.init_app(app)
 migrate.init_app(app, db)
+login_manager.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 @app.route("/register", methods=["POST"])
@@ -61,14 +69,24 @@ def login():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Unauthorized"}), 401
 
-    # update session user
+    login_user(user)
+
+    '''# update session user
     session["user_id"] = user.id
 
     # update user's last login time
     user.last_login = datetime.utcnow()
-    db.session.commit()
+    db.session.commit()'''
 
     return jsonify({
         "id": user.id,
         "email": user.email
     })
+
+
+@app.route("/logout", methods=["POST", "GET"])
+@login_required
+def logout():
+    logout_user()
+
+    return jsonify({})
