@@ -71,13 +71,6 @@ def login():
 
     login_user(user)
 
-    '''# update session user
-    session["user_id"] = user.id
-
-    # update user's last login time
-    user.last_login = datetime.utcnow()
-    db.session.commit()'''
-
     return jsonify({
         "id": user.id,
         "email": user.email
