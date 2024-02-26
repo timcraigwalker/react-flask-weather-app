@@ -13,7 +13,7 @@ class UserFavouriteCity(db.Model):
             "user_id",
             "city",
             "latitude",
-            "longitide",
+            "longitude",
             name="_user_favourite_city_uc"
         ),
     )
@@ -25,8 +25,12 @@ class UserFavouriteCity(db.Model):
         db.String(32), db.ForeignKey("users.id"), nullable=False
     )
     city = db.Column(db.String(150), nullable=False)
-    latitude = db.Column(db.Float(precision=10, asdecimal=False))
-    longitide = db.Column(db.Float(precision=10, asdecimal=False))
+    latitude = db.Column(
+        db.Float(precision=10, asdecimal=False), nullable=False
+    )
+    longitude = db.Column(
+        db.Float(precision=10, asdecimal=False), nullable=False
+    )
 
     user = db.relationship(
         "User", back_populates="favourite_cities"
