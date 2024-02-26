@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_login import login_required
 from flask.views import MethodView
 from flask_smorest import Blueprint
+from marshmallow import ValidationError
 
 from extensions import db
 from models import UserFavouriteCity
@@ -13,10 +14,30 @@ user_favourite_city_blp = Blueprint(
     url_prefix="/user/<user_id>/favourite_cities",
     description="User favourite cities operations",
 )
+user_favourite_city_schema = UserFavouriteCitySchema()
+
+
+def validate_favourite_city_input():
+    # check favourite city data is passed
+    favourite_city_json = request.get_json()
+    if not favourite_city_json:
+        return jsonify({"error": "Missing input data"}), 400
+
+    # validate and deserialize input
+    try:
+        favourite_city_data = user_favourite_city_schema.load(
+            favourite_city_json,
+            instance=UserFavouriteCity(),
+            session=db.session
+        )
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    return favourite_city_data
 
 
 @user_favourite_city_blp.route("/")
-class UserFavouriteCities(MethodView):
+class UserFavouriteCitiesView(MethodView):
     """ CRUD User favourite cities """
 
     @user_favourite_city_blp.response(200, UserFavouriteCitySchema(many=True))
@@ -27,16 +48,15 @@ class UserFavouriteCities(MethodView):
     @user_favourite_city_blp.response(200, UserFavouriteCitySchema)
     @login_required
     def post(self, user_id):
-        city = request.json["city"]
-        latitude = request.json["latitude"]
-        longitude = request.json["longitude"]
+        favourite_city_data = validate_favourite_city_input()
 
+        # check if favourite city already exists
         favourite_exists = (
             UserFavouriteCity.query
             .filter_by(user_id=user_id)
-            .filter_by(city=city)
-            .filter_by(latitude=latitude)
-            .filter_by(longitude=longitude)
+            .filter_by(city=favourite_city_data.city)
+            .filter_by(latitude=favourite_city_data.latitude)
+            .filter_by(longitude=favourite_city_data.longitude)
             .first()
         )
         if favourite_exists:
@@ -44,13 +64,61 @@ class UserFavouriteCities(MethodView):
                 {"error": "User favourite city already exists"}
             ), 409
 
-        new_favourite_city = UserFavouriteCity(
-            user_id=user_id,
-            city=city,
-            latitude=latitude,
-            longitude=longitude
-        )
-        db.session.add(new_favourite_city)
+        # store favourite city to db
+        new_favourite_city = favourite_city_data
+        new_favourite_city.user_id = user_id
+        db.session.add(favourite_city_data)
         db.session.commit()
 
-        return new_favourite_city
+        return favourite_city_data
+
+    @user_favourite_city_blp.response(200)
+    @login_required
+    def delete(self, user_id):
+        favourite_city_data = validate_favourite_city_input()
+
+        # try to get favourite city
+        favourite_city = (
+            UserFavouriteCity.query
+            .filter_by(user_id=user_id)
+            .filter_by(city=favourite_city_data.city)
+            .filter_by(latitude=favourite_city_data.latitude)
+            .filter_by(longitude=favourite_city_data.longitude)
+            .first()
+        )
+        if not favourite_city:
+            return jsonify({}), 204
+
+        # delete favourite city from db
+        db.session.delete(favourite_city)
+        db.session.commit()
+
+        return jsonify({}), 200
+
+
+@user_favourite_city_blp.route("/<user_favourite_city_id>")
+class UserFavouriteCityView(MethodView):
+    """ CRUD User favourite city """
+
+    @user_favourite_city_blp.response(200, UserFavouriteCitySchema())
+    @login_required
+    def get(self, user_id, user_favourite_city_id):
+        return UserFavouriteCity.query.get(user_favourite_city_id)
+
+    @user_favourite_city_blp.response(200)
+    @login_required
+    def delete(self, user_id, user_favourite_city_id):
+        # try to get favourite city
+        favourite_city = UserFavouriteCity.query.get(user_favourite_city_id)
+        if not favourite_city:
+            return jsonify({}), 204
+
+        # check favourite city belongs to user
+        if favourite_city.user_id != user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        # delete favourite city from db
+        db.session.delete(favourite_city)
+        db.session.commit()
+
+        return jsonify({}), 200

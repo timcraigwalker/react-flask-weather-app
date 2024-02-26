@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_login import login_user, login_required, logout_user
 from flask_smorest import Blueprint
 from flask.views import MethodView
+from marshmallow import ValidationError
 
 from extensions import bcrypt, db
 from models import User
@@ -13,54 +14,72 @@ user_blp = Blueprint(
     url_prefix="/user",
     description="User operations",
 )
+user_schema = UserSchema()
+
+
+def validate_user_input():
+    # check user data is passed
+    user_json = request.get_json()
+    if not user_json:
+        return jsonify({"error": "Missing input data"}), 400
+
+    # validate and deserialize input
+    try:
+        user_data = user_schema.load(
+            user_json,
+            instance=User(),
+            session=db.session
+        )
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    return user_data
 
 
 @user_blp.route("/register")
-class UserRegistration(MethodView):
-    """ Register users """
+class UserRegistrationView(MethodView):
+    """ Register user """
 
     @user_blp.response(200, UserSchema)
     def post(self):
-        # get user details from request
-        email = request.json["email"]
-        password = request.json["password"]
+        user_data = validate_user_input()
 
         # check if user already exists
-        user_exists = User.query.filter_by(email=email).first() is not None
+        user_exists = (
+            User.query.filter_by(email=user_data.email).first() is not None
+        )
         if user_exists:
             return jsonify({"error": "User already exists"}), 409
 
         # create user with hashed password
-        hashed_pass = bcrypt.generate_password_hash(password)
-        new_user = User(email=email, password=hashed_pass)
+        hashed_pass = bcrypt.generate_password_hash(user_data.password)
+        new_user = User(email=user_data.email, password=hashed_pass)
         db.session.add(new_user)
         db.session.commit()
 
-        # TODO: Check if user should be logged in during registration
+        # TODO: Check if user should be logged in during registration
         login_user(new_user)
 
         return new_user
 
 
 @user_blp.route("/login")
-class UserLogin(MethodView):
-    """ Login users """
+class UserLoginView(MethodView):
+    """ Login user """
 
     @user_blp.response(200, UserSchema)
     def post(self):
-        # get user details from request
-        email = request.json["email"]
-        password = request.json["password"]
+        user_data = validate_user_input()
 
         # get user by email
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=user_data.email).first()
 
         # check user exists
         if not user:
             return jsonify({"error": "Unauthorized Access"}), 401
 
         # validate user password
-        if not bcrypt.check_password_hash(user.password, password):
+        if not bcrypt.check_password_hash(user.password, user_data.password):
             return jsonify({"error": "Unauthorized"}), 401
 
         # login user to session
@@ -70,12 +89,12 @@ class UserLogin(MethodView):
 
 
 @user_blp.route("/logout")
-class UserLogout(MethodView):
-    """ Logout users """
+class UserLogoutView(MethodView):
+    """ Logout user """
 
     @user_blp.response(200)
     @login_required
     def post(self):
         logout_user()
 
-        return jsonify({})
+        return jsonify({}), 200
