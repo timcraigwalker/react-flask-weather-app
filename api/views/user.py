@@ -21,7 +21,7 @@ def validate_user_input():
     # check user data is passed
     user_json = request.get_json()
     if not user_json:
-        return abort(
+        abort(
             make_response(
                 {
                     "message": "Missing input data",
@@ -39,7 +39,7 @@ def validate_user_input():
             session=db.session
         )
     except ValidationError as err:
-        return abort(
+        abort(
             make_response(
                 {
                     "message": err.messages,
@@ -65,7 +65,7 @@ class UserRegistrationView(MethodView):
             User.query.filter_by(email=user_data.email).first() is not None
         )
         if user_exists:
-            return abort(
+            abort(
                 make_response(
                     {
                         "message": "User already exists",
@@ -100,7 +100,7 @@ class UserLoginView(MethodView):
 
         # check user exists
         if not user:
-            return abort(
+            abort(
                 make_response(
                     {
                         "message": "Unauthorized Access",
@@ -112,7 +112,7 @@ class UserLoginView(MethodView):
 
         # validate user password
         if not bcrypt.check_password_hash(user.password, user_data.password):
-            return abort(
+            abort(
                 make_response(
                     {
                         "message": "Unauthorized",

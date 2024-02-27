@@ -21,7 +21,7 @@ def validate_favourite_city_input():
     # check favourite city data is passed
     favourite_city_json = request.get_json()
     if not favourite_city_json:
-        return abort(
+        abort(
             make_response(
                 {
                     "message": "Missing input data",
@@ -39,7 +39,7 @@ def validate_favourite_city_input():
             session=db.session
         )
     except ValidationError as err:
-        return abort(
+        abort(
             make_response(
                 {
                     "message": err.messages,
@@ -76,7 +76,7 @@ class UserFavouriteCitiesView(MethodView):
             .first()
         )
         if favourite_exists:
-            return abort(
+            abort(
                 make_response(
                     {
                         "message": "User favourite city already exists",
@@ -137,7 +137,7 @@ class UserFavouriteCityView(MethodView):
 
         # check favourite city belongs to user
         if favourite_city.user_id != user_id:
-            return abort(
+            abort(
                 make_response(
                     {
                         "message": "Unauthorized",
