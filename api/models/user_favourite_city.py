@@ -1,8 +1,8 @@
 """
 User Favourite City Model
 """
-from extensions import db
-from utils import create_uuid
+from api.extensions import db
+from api.utils import create_uuid
 
 
 class UserFavouriteCity(db.Model):

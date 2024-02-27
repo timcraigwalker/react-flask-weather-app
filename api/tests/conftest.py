@@ -2,9 +2,9 @@
 import pytest
 from pytest_factoryboy import register
 
-from app import create_app
-from extensions import db as _db
-from tests.factories import UserFactory, UserFavouriteCityFactory
+from api.app import create_app
+from api.extensions import db as _db
+from api.tests.factories import UserFactory, UserFavouriteCityFactory
 
 
 @pytest.fixture(scope="session")

@@ -1,8 +1,8 @@
 import factory
 
-from extensions import bcrypt, db
-from models import User, UserFavouriteCity
-from utils import create_uuid
+from api.extensions import bcrypt, db
+from api.models import User, UserFavouriteCity
+from api.utils import create_uuid
 
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -26,7 +26,7 @@ class UserFavouriteCityFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     id = create_uuid()
     city = "Test City"
-    latitide = 52.4955625251478
+    latitude = 52.4955625251478
     longitude = -1.8897333678507744
 
     user_id = factory.LazyAttribute(lambda a: UserFactory.id)

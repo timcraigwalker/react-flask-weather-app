@@ -1,13 +1,13 @@
 from flask import Flask
 
-from extensions import api, bcrypt, db, login_manager, migrate
-from models import User
-from views import api_blp, user_blp, user_favourite_city_blp
+from api.extensions import api, bcrypt, db, login_manager, migrate
+from api.models import User
+from api.views import api_blp, user_blp, user_favourite_city_blp
 
 
 def create_app(testing=False):
     app = Flask("react-flask-weather-app")
-    app.config.from_object("config")
+    app.config.from_object("api.config")
 
     if testing is True:
         app.config["TESTING"] = True

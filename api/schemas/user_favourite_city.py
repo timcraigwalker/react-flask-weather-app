@@ -1,6 +1,6 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from models import UserFavouriteCity
+from api.models import UserFavouriteCity
 
 
 class UserFavouriteCitySchema(SQLAlchemyAutoSchema):
