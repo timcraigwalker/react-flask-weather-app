@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 
 from extensions import bcrypt, db
 from models import User
-from schemas.user import UserSchema
+from schemas.user import UserSchema, UserResponseSchema
 
 user_blp = Blueprint(
     "user",
@@ -56,11 +56,9 @@ def validate_user_input():
 class UserRegistrationView(MethodView):
     """ Register user """
 
-    @user_blp.response(200, UserSchema)
+    @user_blp.response(200, UserResponseSchema)
     def post(self):
         user_data = validate_user_input()
-
-        print(user_data)
 
         # check if user already exists
         user_exists = (
@@ -93,7 +91,7 @@ class UserRegistrationView(MethodView):
 class UserLoginView(MethodView):
     """ Login user """
 
-    @user_blp.response(200, UserSchema)
+    @user_blp.response(200, UserResponseSchema)
     def post(self):
         user_data = validate_user_input()
 
