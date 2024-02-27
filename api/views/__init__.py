@@ -1,9 +1,13 @@
-from api.views.api import api_blp
+from api.views.auth import auth_blp
+from api.views.cities import cities_blp
 from api.views.user import user_blp
 from api.views.user_favourite_city import user_favourite_city_blp
+from api.views.weather import weather_blp
 
 __all__ = [
-    "api_blp",
+    "auth_blp",
+    "cities_blp",
     "user_blp",
-    "user_favourite_city_blp"
+    "user_favourite_city_blp",
+    "weather_blp"
 ]

@@ -11,7 +11,7 @@ class TestUserView():
         assert response.status_code == 200
 
 
-class TestUserRegistrationView():
+class TestRegistrationView():
     user_json = {
         "email": "test_new_user@email.com",
         "password": "fKg3CO3D8VlQ"
@@ -19,12 +19,12 @@ class TestUserRegistrationView():
 
     @pytest.mark.parametrize("user_json", [user_json])
     def test_register_user_200(app, client, db, user, user_json):
-        response = client.post("user/register", json=user_json)
+        response = client.post("auth/register", json=user_json)
 
         assert response.status_code == 200
 
     def test_register_user_missing_input_400(app, client, db, user):
-        response = client.post("user/register", json={})
+        response = client.post("auth/register", json={})
 
         assert response.status_code == 400
         assert response.get_json()["message"] == "Missing input data"
@@ -46,7 +46,7 @@ class TestUserRegistrationView():
     ):
         del user_json[missing_field]
 
-        response = client.post("user/register", json=user_json)
+        response = client.post("auth/register", json=user_json)
 
         assert response.status_code == 422
         assert response.get_json()["message"] == {
@@ -69,12 +69,12 @@ class TestUserRegistrationView():
             password=user_json["password"]
         )
 
-        response = client.post("user/register", json=user_json)
+        response = client.post("auth/register", json=user_json)
 
         assert response.status_code == 409
 
 
-class TestUserLoginView():
+class TestLoginView():
     user_json = {
         "email": "test_user@email.com",
         "password": "c5y44lwJRMZJ"
@@ -82,12 +82,12 @@ class TestUserLoginView():
 
     @pytest.mark.parametrize("user_json", [user_json])
     def test_login_user_200(app, client, db, user, user_json):
-        response = client.post("user/login", json=user_json)
+        response = client.post("auth/login", json=user_json)
 
         assert response.status_code == 200
 
     def test_login_user_missing_input_400(app, client, db, user):
-        response = client.post("user/login", json={})
+        response = client.post("auth/login", json={})
 
         assert response.status_code == 400
         assert response.get_json()["message"] == "Missing input data"
@@ -109,7 +109,7 @@ class TestUserLoginView():
     ):
         del user_json[missing_field]
 
-        response = client.post("user/login", json=user_json)
+        response = client.post("auth/login", json=user_json)
 
         assert response.status_code == 422
         assert response.get_json()["message"] == {
@@ -128,7 +128,7 @@ class TestUserLoginView():
     ):
         user_json["email"] = "test_unknown_user@email.com"
 
-        response = client.post("user/login", json=user_json)
+        response = client.post("auth/login", json=user_json)
 
         assert response.status_code == 401
         assert response.get_json()["message"] == "Unauthorized Access"
@@ -143,14 +143,14 @@ class TestUserLoginView():
     ):
         user_json["password"] = "incorrect_password"
 
-        response = client.post("user/login", json=user_json)
+        response = client.post("auth/login", json=user_json)
 
         assert response.status_code == 401
         assert response.get_json()["message"] == "Unauthorized"
 
 
-class TestUserLogoutView():
+class TestLogoutView():
     def test_logout_user_200(app, client, db, user):
-        response = client.post("user/logout")
+        response = client.post("auth/logout")
 
         assert response.status_code == 200

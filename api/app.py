@@ -2,12 +2,19 @@ from flask import Flask
 
 from api.extensions import api, bcrypt, db, login_manager, migrate
 from api.models import User
-from api.views import api_blp, user_blp, user_favourite_city_blp
+from api.views import (
+    auth_blp,
+    cities_blp,
+    user_blp,
+    user_favourite_city_blp,
+    weather_blp
+)
 
 
 def create_app(testing=False):
     app = Flask("react-flask-weather-app")
     app.config.from_object("api.config")
+    app.url_map.strict_slashes = False
 
     if testing is True:
         app.config["TESTING"] = True
@@ -35,12 +42,14 @@ def configue_extensions(app):
 
 
 def register_bluprints(api):
-    api.register_blueprint(api_blp, path="api")
+    api.register_blueprint(auth_blp, path="auth")
+    api.register_blueprint(cities_blp, path="cities")
     api.register_blueprint(user_blp, path="user")
     api.register_blueprint(
         user_favourite_city_blp,
         path="user/<user_id>/favourite_cities"
     )
+    api.register_blueprint(weather_blp, path="weather")
 
 
 @login_manager.user_loader
