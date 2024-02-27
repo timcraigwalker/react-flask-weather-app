@@ -19,6 +19,8 @@ def db(app):
     with app.app_context():
         _db.create_all()
 
+    app.app_context().push()
+
     yield _db
 
     with app.app_context():
