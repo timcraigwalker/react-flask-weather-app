@@ -52,7 +52,7 @@ def validate_favourite_city_input():
     return favourite_city_data
 
 
-@user_favourite_city_blp.route("/")
+@user_favourite_city_blp.route("")
 class UserFavouriteCitiesView(MethodView):
     """ CRUD User favourite cities """
 
@@ -125,13 +125,21 @@ class UserFavouriteCityView(MethodView):
     @user_favourite_city_blp.response(200, UserFavouriteCitySchema())
     @login_required
     def get(self, user_id, user_favourite_city_id):
-        return UserFavouriteCity.query.get(user_favourite_city_id)
+        return (
+            UserFavouriteCity.query.filter_by(
+                id=user_favourite_city_id
+            ).first()
+        )
 
     @user_favourite_city_blp.response(200)
     @login_required
     def delete(self, user_id, user_favourite_city_id):
         # try to get favourite city
-        favourite_city = UserFavouriteCity.query.get(user_favourite_city_id)
+        favourite_city = (
+            UserFavouriteCity.query.filter_by(
+                id=user_favourite_city_id
+            ).first()
+        )
         if not favourite_city:
             return make_response({}), 204
 

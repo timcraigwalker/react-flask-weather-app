@@ -25,7 +25,7 @@ class UserFavouriteCityFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
 
     id = create_uuid()
-    city = "Test City"
+    city = "test_city"
     latitude = 52.4955625251478
     longitude = -1.8897333678507744
 
