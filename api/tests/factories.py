@@ -1,6 +1,6 @@
 import factory
 
-from extensions import db
+from extensions import bcrypt, db
 from models import User, UserFavouriteCity
 from utils import create_uuid
 
@@ -13,8 +13,8 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
 
     id = create_uuid()
-    email = "test@email.com"
-    password = "123456789"
+    email = "test_user@email.com"
+    password = bcrypt.generate_password_hash("c5y44lwJRMZJ")
 
 
 class UserFavouriteCityFactory(factory.alchemy.SQLAlchemyModelFactory):

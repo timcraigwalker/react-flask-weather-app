@@ -23,9 +23,8 @@ def db(app):
 
     yield _db
 
-    with app.app_context():
-        _db.session.close()
-        _db.drop_all()
+    _db.session.close()
+    _db.drop_all()
 
 
 @pytest.fixture
