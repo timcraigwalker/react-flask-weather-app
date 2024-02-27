@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import abort, make_response, request
 from flask_login import login_required
 from flask.views import MethodView
 from flask_smorest import Blueprint
@@ -21,7 +21,15 @@ def validate_favourite_city_input():
     # check favourite city data is passed
     favourite_city_json = request.get_json()
     if not favourite_city_json:
-        return jsonify({"error": "Missing input data"}), 400
+        return abort(
+            make_response(
+                {
+                    "message": "Missing input data",
+                    "code": 400,
+                },
+                400,
+            )
+        )
 
     # validate and deserialize input
     try:
@@ -31,7 +39,15 @@ def validate_favourite_city_input():
             session=db.session
         )
     except ValidationError as err:
-        return jsonify(err.messages), 422
+        return abort(
+            make_response(
+                {
+                    "message": err.messages,
+                    "code": 422,
+                },
+                422,
+            )
+        )
 
     return favourite_city_data
 
@@ -60,9 +76,15 @@ class UserFavouriteCitiesView(MethodView):
             .first()
         )
         if favourite_exists:
-            return jsonify(
-                {"error": "User favourite city already exists"}
-            ), 409
+            return abort(
+                make_response(
+                    {
+                        "message": "User favourite city already exists",
+                        "code": 409,
+                    },
+                    409,
+                )
+            )
 
         # store favourite city to db
         new_favourite_city = favourite_city_data
@@ -87,13 +109,13 @@ class UserFavouriteCitiesView(MethodView):
             .first()
         )
         if not favourite_city:
-            return jsonify({}), 204
+            return make_response({}), 204
 
         # delete favourite city from db
         db.session.delete(favourite_city)
         db.session.commit()
 
-        return jsonify({}), 200
+        return make_response({}), 200
 
 
 @user_favourite_city_blp.route("/<user_favourite_city_id>")
@@ -111,14 +133,22 @@ class UserFavouriteCityView(MethodView):
         # try to get favourite city
         favourite_city = UserFavouriteCity.query.get(user_favourite_city_id)
         if not favourite_city:
-            return jsonify({}), 204
+            return make_response({}), 204
 
         # check favourite city belongs to user
         if favourite_city.user_id != user_id:
-            return jsonify({"error": "Unauthorized"}), 401
+            return abort(
+                make_response(
+                    {
+                        "message": "Unauthorized",
+                        "code": 401,
+                    },
+                    401,
+                )
+            )
 
         # delete favourite city from db
         db.session.delete(favourite_city)
         db.session.commit()
 
-        return jsonify({}), 200
+        return make_response({}), 200

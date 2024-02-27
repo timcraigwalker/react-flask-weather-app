@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import abort, make_response, request
 from flask_login import login_user, login_required, logout_user
 from flask_smorest import Blueprint
 from flask.views import MethodView
@@ -21,7 +21,15 @@ def validate_user_input():
     # check user data is passed
     user_json = request.get_json()
     if not user_json:
-        return jsonify({"error": "Missing input data"}), 400
+        return abort(
+            make_response(
+                {
+                    "message": "Missing input data",
+                    "code": 400,
+                },
+                400,
+            )
+        )
 
     # validate and deserialize input
     try:
@@ -31,7 +39,15 @@ def validate_user_input():
             session=db.session
         )
     except ValidationError as err:
-        return jsonify(err.messages), 422
+        return abort(
+            make_response(
+                {
+                    "message": err.messages,
+                    "code": 422,
+                },
+                422,
+            )
+        )
 
     return user_data
 
@@ -44,12 +60,22 @@ class UserRegistrationView(MethodView):
     def post(self):
         user_data = validate_user_input()
 
+        print(user_data)
+
         # check if user already exists
         user_exists = (
             User.query.filter_by(email=user_data.email).first() is not None
         )
         if user_exists:
-            return jsonify({"error": "User already exists"}), 409
+            return abort(
+                make_response(
+                    {
+                        "message": "User already exists",
+                        "code": 409,
+                    },
+                    409,
+                )
+            )
 
         # create user with hashed password
         hashed_pass = bcrypt.generate_password_hash(user_data.password)
@@ -76,11 +102,27 @@ class UserLoginView(MethodView):
 
         # check user exists
         if not user:
-            return jsonify({"error": "Unauthorized Access"}), 401
+            return abort(
+                make_response(
+                    {
+                        "message": "Unauthorized Access",
+                        "code": 401,
+                    },
+                    401,
+                )
+            )
 
         # validate user password
         if not bcrypt.check_password_hash(user.password, user_data.password):
-            return jsonify({"error": "Unauthorized"}), 401
+            return abort(
+                make_response(
+                    {
+                        "message": "Unauthorized",
+                        "code": 401,
+                    },
+                    401,
+                )
+            )
 
         # login user to session
         login_user(user)
@@ -97,4 +139,4 @@ class UserLogoutView(MethodView):
     def post(self):
         logout_user()
 
-        return jsonify({}), 200
+        return make_response({}), 200
