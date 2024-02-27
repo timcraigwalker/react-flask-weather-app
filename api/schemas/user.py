@@ -1,4 +1,4 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 
 from models import User
 
@@ -8,4 +8,8 @@ class UserSchema(SQLAlchemyAutoSchema):
         model = User
         include_relationships = True
         load_instance = True
-        load_only = ["password"]
+
+
+class UserResponseSchema(UserSchema):
+    class Meta(UserSchema.Meta):
+        exclude = ("password", )
