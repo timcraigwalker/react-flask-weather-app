@@ -1,25 +1,24 @@
 import './App.css';
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
-import CurrentWeather from './components/CurrentWeather/currentWeather';
 import Header from './components/Header/header'
-import Search from './components/Search/search';
+import Login from './pages/login';
+import Home from './pages/home';
 
 function App() {
-
-  const handleOnSearchChange = (searchData) => {
-    console.log(searchData);
-  }
-  
-
   return (
-    <div className='body'>
+    <Router>
       <Header />
-      <div className='container'>
-        <Search onSearchChange={handleOnSearchChange}/>
-        <CurrentWeather />
-      </div>
-    </div>
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 
