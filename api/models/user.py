@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     id = db.Column(
         db.String(32), primary_key=True, unique=True, default=create_uuid
     )
-    email = db.Column(db.String(150), unique=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
 
     favourite_cities = db.relationship(
