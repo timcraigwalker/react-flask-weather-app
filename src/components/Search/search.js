@@ -11,7 +11,7 @@ const Search = ({onSearchChange}) => {
     }
 
     const loadOptions = (inputValue) => {
-        return fetch(`/api/cities/${inputValue}`)
+        return fetch(`/cities/${inputValue}`)
         .then(response => response.json())
         .then((response) => {
             return {
