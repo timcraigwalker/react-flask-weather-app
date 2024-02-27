@@ -6,7 +6,7 @@ To run react use:
 
 ### `npm start`
 
-To run flask activae venv:
+To run flask activate venv:
 
 ### `. venv/bin/activate`
 ### `flask run`
@@ -14,4 +14,5 @@ To run flask activae venv:
 API keys for the following env vars are required, get them using the links;
 
 OPENWEATHER_API_KEY: https://openweathermap.org/
+
 RAPID_API_KEY: https://rapidapi.com/wirefreethought/api/geodb-cities/
