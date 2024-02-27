@@ -4,6 +4,13 @@ from api.utils import create_uuid
 from api.tests.factories import UserFactory
 
 
+class TestUserView():
+    def test_user_get_200(app, client, db, user):
+        response = client.get("user")
+
+        assert response.status_code == 200
+
+
 class TestUserRegistrationView():
     user_json = {
         "email": "test_new_user@email.com",

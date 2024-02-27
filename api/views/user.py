@@ -1,5 +1,5 @@
 from flask import abort, make_response, request
-from flask_login import login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from marshmallow import ValidationError
@@ -52,6 +52,16 @@ def validate_user_input():
     return user_data
 
 
+@user_blp.route("/")
+class UserView(MethodView):
+    """ Get user """
+
+    @user_blp.response(200, UserResponseSchema)
+    @login_required
+    def get(self):
+        return current_user
+
+
 @user_blp.route("/register")
 class UserRegistrationView(MethodView):
     """ Register user """
@@ -81,7 +91,6 @@ class UserRegistrationView(MethodView):
         db.session.add(new_user)
         db.session.commit()
 
-        # TODO: Check if user should be logged in during registration
         login_user(new_user)
 
         return new_user
