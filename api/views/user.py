@@ -1,5 +1,5 @@
 from flask import abort, make_response, request
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, logout_user, login_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from marshmallow import ValidationError

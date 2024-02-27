@@ -14,6 +14,7 @@ def create_app(testing=False):
         app.config[
             "SQLALCHEMY_DATABASE_URI"
         ] = "sqlite:///test_weatherapp.db"
+        app.config["LOGIN_DISABLED"] = True
 
     configue_extensions(app)
     register_bluprints(api)

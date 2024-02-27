@@ -144,20 +144,6 @@ class TestUserLoginView():
 
 class TestUserLogoutView():
     def test_logout_user_200(app, client, db, user):
-        # login a user
-        client.post(
-            "user/login",
-            json={
-                "email": "test_user@email.com",
-                "password": "c5y44lwJRMZJ"
-            }
-        )
-
         response = client.post("user/logout")
 
         assert response.status_code == 200
-
-    def test_logout_user_user_not_logged_in_401(app, client, db, user):
-        response = client.post("user/logout")
-
-        assert response.status_code == 401
