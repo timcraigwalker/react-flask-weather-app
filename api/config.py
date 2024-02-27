@@ -4,6 +4,8 @@ Use env to customise
 """
 import os
 
+FLASK_APP = os.getenv("FLASK_APP", "app.py")
+
 FLASK_DEBUG = os.getenv("FLASK_DEBUG", False)
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default_key")
