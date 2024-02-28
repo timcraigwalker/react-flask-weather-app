@@ -1,0 +1,11 @@
+# dockerfile for flask API
+
+FROM python:3.8
+WORKDIR /api
+
+COPY api/ ./
+RUN pip install --upgrade pip
+RUN pip install -r ./requirements.txt
+
+EXPOSE 5000
+CMD ["gunicorn", "-b", ":5000", "wsgi:app"]

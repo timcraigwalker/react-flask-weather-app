@@ -1,7 +1,7 @@
 import pytest
 
-from api.utils import create_uuid
-from api.tests.factories import UserFactory
+from utils import create_uuid
+from tests.factories import UserFactory
 
 
 class TestUserView():

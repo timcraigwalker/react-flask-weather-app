@@ -3,8 +3,8 @@ User Model
 """
 from flask_login import UserMixin
 
-from api.extensions import db
-from api.utils import create_uuid
+from extensions import db
+from utils import create_uuid
 
 
 class User(db.Model, UserMixin):

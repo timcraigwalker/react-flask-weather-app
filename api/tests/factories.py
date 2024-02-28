@@ -1,8 +1,8 @@
 import factory
 
-from api.extensions import bcrypt, db
-from api.models import User, UserFavouriteCity
-from api.utils import create_uuid
+from extensions import bcrypt, db
+from models import User, UserFavouriteCity
+from utils import create_uuid
 
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):

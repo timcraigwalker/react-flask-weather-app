@@ -1,7 +1,7 @@
 import pytest
 
-from api.utils import create_uuid
-from api.tests.factories import UserFavouriteCityFactory
+from utils import create_uuid
+from tests.factories import UserFavouriteCityFactory
 
 
 class TestUserFavouriteCitiesView():

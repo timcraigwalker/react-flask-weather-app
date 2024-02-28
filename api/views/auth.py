@@ -4,9 +4,9 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from marshmallow import ValidationError
 
-from api.extensions import bcrypt, db
-from api.models import User
-from api.schemas.user import UserSchema, UserResponseSchema
+from extensions import bcrypt, db
+from models import User
+from schemas.user import UserSchema, UserResponseSchema
 
 auth_blp = Blueprint(
     "auth",

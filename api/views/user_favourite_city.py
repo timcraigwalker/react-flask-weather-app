@@ -4,9 +4,9 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from marshmallow import ValidationError
 
-from api.extensions import db
-from api.models import UserFavouriteCity
-from api.schemas.user_favourite_city import UserFavouriteCitySchema
+from extensions import db
+from models import UserFavouriteCity
+from schemas.user_favourite_city import UserFavouriteCitySchema
 
 user_favourite_city_blp = Blueprint(
     "user/<user_id>/favourite_cities",

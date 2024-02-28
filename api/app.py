@@ -1,8 +1,8 @@
 from flask import Flask
 
-from api.extensions import api, bcrypt, db, login_manager, migrate
-from api.models import User
-from api.views import (
+from extensions import api, bcrypt, db, login_manager, migrate
+from models import User
+from views import (
     auth_blp,
     cities_blp,
     user_blp,
@@ -13,7 +13,7 @@ from api.views import (
 
 def create_app(testing=False):
     app = Flask("react-flask-weather-app")
-    app.config.from_object("api.config")
+    app.config.from_object("config")
     app.url_map.strict_slashes = False
 
     if testing is True:

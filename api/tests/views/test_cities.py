@@ -1,7 +1,7 @@
 import mock
 
 
-@mock.patch("api.views.cities.requests.get")
+@mock.patch("views.cities.requests.get")
 def test_cities(app, client, db):
     response = client.get("/cities")
 

@@ -2,7 +2,7 @@ from flask_login import current_user, login_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 
-from api.schemas.user import UserResponseSchema
+from schemas.user import UserResponseSchema
 
 user_blp = Blueprint(
     "user",

@@ -1,5 +1,5 @@
-from api.models.user import User
-from api.models.user_favourite_city import UserFavouriteCity
+from models.user import User
+from models.user_favourite_city import UserFavouriteCity
 
 
 __all__ = [
