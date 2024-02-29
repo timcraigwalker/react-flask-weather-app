@@ -1,5 +1,5 @@
 from flask import abort, make_response, request
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from marshmallow import ValidationError
@@ -52,7 +52,7 @@ def validate_user_input():
     return user_data
 
 
-@auth_blp.route("/register")
+@auth_blp.route("/register", tags=["auth"])
 class RegistrationView(MethodView):
     """ Register user """
 
@@ -86,7 +86,7 @@ class RegistrationView(MethodView):
         return new_user
 
 
-@auth_blp.route("/login")
+@auth_blp.route("/login", tags=["auth"])
 class LoginView(MethodView):
     """ Login user """
 
@@ -127,7 +127,7 @@ class LoginView(MethodView):
         return user
 
 
-@auth_blp.route("/logout")
+@auth_blp.route("/logout", tags=["auth"])
 class LogoutView(MethodView):
     """ Logout user """
 

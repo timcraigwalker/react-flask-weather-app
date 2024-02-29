@@ -52,7 +52,7 @@ def validate_favourite_city_input():
     return favourite_city_data
 
 
-@user_favourite_city_blp.route("")
+@user_favourite_city_blp.route("", tags=["user"])
 class UserFavouriteCitiesView(MethodView):
     """ CRUD User favourite cities """
 
@@ -118,7 +118,7 @@ class UserFavouriteCitiesView(MethodView):
         return make_response({}), 200
 
 
-@user_favourite_city_blp.route("/<user_favourite_city_id>")
+@user_favourite_city_blp.route("/<user_favourite_city_id>", tags=["user"])
 class UserFavouriteCityView(MethodView):
     """ CRUD User favourite city """
 

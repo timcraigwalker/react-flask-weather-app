@@ -11,8 +11,13 @@ cities_blp = Blueprint(
 )
 
 
-@cities_blp.route("", methods=["GET"], defaults={"name_prefix": ""})
-@cities_blp.route("/<name_prefix>", methods=["GET"])
+@cities_blp.route(
+    "",
+    methods=["GET"],
+    defaults={"name_prefix": ""},
+    tags=["cities"]
+)
+@cities_blp.route("/<name_prefix>", methods=["GET"], tags=["cities"])
 @login_required
 def cities(name_prefix):
     url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"

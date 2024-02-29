@@ -12,7 +12,7 @@ user_blp = Blueprint(
 )
 
 
-@user_blp.route("/")
+@user_blp.route("/", tags=["user"])
 class UserView(MethodView):
     """ Get user """
 

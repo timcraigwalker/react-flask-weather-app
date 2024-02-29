@@ -11,7 +11,11 @@ weather_blp = Blueprint(
 )
 
 
-@weather_blp.route("/<latitude>/<longitude>", methods=["GET"])
+@weather_blp.route(
+    "/<latitude>/<longitude>",
+    methods=["GET"],
+    tags=["weather"]
+)
 @login_required
 def weather(latitude, longitude):
     url = "https://api.openweathermap.org/data/2.5/weather"

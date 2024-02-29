@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_smorest import Blueprint
 
 from extensions import api, bcrypt, db, login_manager, migrate
 from models import User
@@ -42,14 +43,23 @@ def configue_extensions(app):
 
 
 def register_bluprints(api):
-    api.register_blueprint(auth_blp, path="auth")
-    api.register_blueprint(cities_blp, path="cities")
-    api.register_blueprint(user_blp, path="user")
-    api.register_blueprint(
+    api_blp = Blueprint(
+        "api",
+        "api",
+        url_prefix="/api",
+        description="Flask API views",
+    )
+
+    api_blp.register_blueprint(auth_blp, path="auth")
+    api_blp.register_blueprint(cities_blp, path="cities")
+    api_blp.register_blueprint(user_blp, path="user")
+    api_blp.register_blueprint(
         user_favourite_city_blp,
         path="user/<user_id>/favourite_cities"
     )
-    api.register_blueprint(weather_blp, path="weather")
+    api_blp.register_blueprint(weather_blp, path="weather")
+
+    api.register_blueprint(api_blp, path="api")
 
 
 @login_manager.user_loader

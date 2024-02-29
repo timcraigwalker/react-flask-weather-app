@@ -18,7 +18,7 @@ class TestUserFavouriteCitiesView():
         user,
         user_favourite_city
     ):
-        response = client.get(f"/user/{user.id}/favourite_cities")
+        response = client.get(f"/api/user/{user.id}/favourite_cities")
 
         assert response.status_code == 200
         assert response.get_json()[0]["city"] == user_favourite_city.city
@@ -35,7 +35,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city_json
     ):
         response = client.post(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -50,7 +50,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city
     ):
         response = client.post(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json={}
         )
 
@@ -75,7 +75,7 @@ class TestUserFavouriteCitiesView():
         del user_favourite_city_json[missing_field]
 
         response = client.post(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -105,7 +105,7 @@ class TestUserFavouriteCitiesView():
         )
 
         response = client.post(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -130,7 +130,7 @@ class TestUserFavouriteCitiesView():
         )
 
         response = client.delete(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -148,7 +148,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city_json
     ):
         response = client.delete(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -162,7 +162,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city
     ):
         response = client.delete(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json={}
         )
 
@@ -187,7 +187,7 @@ class TestUserFavouriteCitiesView():
         del user_favourite_city_json[missing_field]
 
         response = client.delete(
-            f"/user/{user.id}/favourite_cities",
+            f"api/user/{user.id}/favourite_cities",
             json=user_favourite_city_json
         )
 
@@ -206,7 +206,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city
     ):
         response = client.get(
-            f"/user/{user.id}/favourite_cities/{user_favourite_city.id}"
+            f"api/user/{user.id}/favourite_cities/{user_favourite_city.id}"
         )
 
         assert response.status_code == 200
@@ -220,7 +220,7 @@ class TestUserFavouriteCitiesView():
         user_favourite_city
     ):
         response = client.delete(
-            f"/user/{user.id}/favourite_cities/{user_favourite_city.id}"
+            f"api/user/{user.id}/favourite_cities/{user_favourite_city.id}"
         )
 
         assert response.status_code == 200
