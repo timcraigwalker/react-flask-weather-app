@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - api/.flaskenv
+    image: react-flask-weather-app-api
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    image: react-flask-weather-app-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - api

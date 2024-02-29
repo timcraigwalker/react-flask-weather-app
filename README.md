@@ -4,23 +4,29 @@ This app will allow users to search for a cities current weather and forecast.
 
 Once registered and signed in, users can save their favourite cities.
 
-## Available Scripts
+### Available Scripts
 
-To run react use:
+To run the app using docker:
 
-### `npm start`
+    docker-compose up
 
-To run flask activate venv:
+To run the app locally without docker, execute these commands in separate terminals:
 
-### `. venv/bin/activate`
-### `flask run`
+    npm run start
+    npm run start-api
 
-API keys for the following env vars are required, get them using the links;
+### Prerequisites
 
-OPENWEATHER_API_KEY: https://openweathermap.org/
+API keys for the following env vars are required from these sites;
 
-RAPID_API_KEY: https://rapidapi.com/wirefreethought/api/geodb-cities/
+[OPENWEATHER_API_KEY](https://openweathermap.org/)
+[RAPID_API_KEY](https://rapidapi.com/wirefreethought/api/geodb-cities/)
 
-## API Docs
+#### Requirements for Docker
+
+[Docker](https://docs.docker.com/engine/)
+[Docker Compose](https://docs.docker.com/compose/install/)
+
+### API Docs
 
 [/swagger_ui](http://localhost:5000/swagger-ui)

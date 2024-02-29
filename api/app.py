@@ -13,7 +13,7 @@ from views import (
 
 
 def create_app(testing=False):
-    app = Flask("react-flask-weather-app")
+    app = Flask("react-flask-weather-app", static_folder='../build', static_url_path='/')
     app.config.from_object("config")
     app.url_map.strict_slashes = False
 
