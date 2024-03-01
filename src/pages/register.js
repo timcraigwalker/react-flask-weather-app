@@ -1,16 +1,18 @@
+import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from "@mui/material";
 
-const Login = () => {
-    const navigate = useNavigate();
-
+const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
+    const navigate = useNavigate();
 
-    const handleLogin = async () => {
+
+    const handleRegistration = () => {
         // TODO: Check email and password are set before calling endpoint
+        // TODO: Check password and confirm password match
 
         const requestOptions = {
             method: 'POST',
@@ -18,17 +20,17 @@ const Login = () => {
             body: JSON.stringify({ email, password }),
             credentials: "include"
         };
-        try {
-            const response = await fetch('api/auth/login', requestOptions);
-            const responseJson = await response.json();
+        return fetch('api/auth/register', requestOptions)
+        .then((response) => response.json())
+        .then((responseJson) => {
             if (responseJson["id"]) {
-                navigate("/"); // Redirect to the home page after login
+                // Redirect to the home page after registration
+                navigate("/"); 
             } else {
-                setLoginErrorMessage(responseJson["message"]);
+                setRegisterErrorMessage(responseJson["message"]);
             }
-        } catch (error) {
-            console.error(error);
-        }
+        })
+        .catch((error) => {console.error(error);});
     }
 
     return (
@@ -45,7 +47,7 @@ const Login = () => {
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }} ></Avatar>
                     <Typography component="h1" variant="h5">
-                        Log in
+                        Register
                     </Typography>
                     <Box sx={{ mt: 1 }}>
                         <TextField
@@ -68,32 +70,33 @@ const Login = () => {
                             label="Password"
                             type="password"
                             id="password"
-                            autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)} 
                         />
-                        {loginErrorMessage}
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                        />
+                        {registerErrorMessage}
                         <Button
                             type="button"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick={handleLogin}
+                            onClick={handleRegistration}
                         >
-                            Log In
+                            Register
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                {/*<Link href="#" variant="body2">
-                                    {"Forgot password?"}
-                                </Link>*/}
-                            </Grid>
-                            <Grid item>
-                                <Link to="/register" variant="body2">
-                                    {"Don't have an account? Register"}
-                                </Link>
-                            </Grid>
-                        </Grid>
+                        <Link to="/login" variant="body2">
+                            {"Already have an account? Login"}
+                        </Link>
                     </Box>
                 </Box>
             </Container>
@@ -101,4 +104,4 @@ const Login = () => {
     );
 };
  
-export default Login;
+export default Register;
