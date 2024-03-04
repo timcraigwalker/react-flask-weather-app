@@ -12,16 +12,39 @@ weather_blp = Blueprint(
 
 
 @weather_blp.route(
-    "current/<latitude>/<longitude>",
+    "/<latitude>/<longitude>",
     methods=["GET"],
     tags=["weather"]
 )
 @login_required
 def weather(latitude, longitude):
+    url = "https://api.openweathermap.org/data/3.0/onecall"
+
+    params = {
+        "appid": current_app.config["OPENWEATHER_API_KEY"],
+        "units": "metric",
+        "exclude": "minutely,hourly,alerts",
+        "lat": latitude,
+        "lon": longitude
+    }
+
+    response = requests.get(url, params=params)
+
+    return response.json()
+
+
+@weather_blp.route(
+    "current/<latitude>/<longitude>",
+    methods=["GET"],
+    tags=["weather"]
+)
+@login_required
+def current(latitude, longitude):
     url = "https://api.openweathermap.org/data/2.5/weather"
 
     params = {
         "appid": current_app.config["OPENWEATHER_API_KEY"],
+        "units": "metric",
         "lat": latitude,
         "lon": longitude
     }
@@ -42,6 +65,7 @@ def forecast(latitude, longitude):
 
     params = {
         "appid": current_app.config["OPENWEATHER_API_KEY"],
+        "units": "metric",
         "lat": latitude,
         "lon": longitude
     }
