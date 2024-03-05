@@ -1,19 +1,17 @@
+from extensions import api, bcrypt, db, login_manager, migrate
 from flask import Flask
 from flask_smorest import Blueprint
-
-from extensions import api, bcrypt, db, login_manager, migrate
 from models import User
-from views import (
-    auth_blp,
-    cities_blp,
-    user_blp,
-    user_favourite_city_blp,
-    weather_blp
-)
+from views import (auth_blp, cities_blp, user_blp, user_favourite_city_blp,
+                   weather_blp)
 
 
 def create_app(testing=False):
-    app = Flask("react-flask-weather-app", static_folder='../build', static_url_path='/')
+    app = Flask(
+        "react-flask-weather-app",
+        static_folder='../build',
+        static_url_path='/'
+    )
     app.config.from_object("config")
     app.url_map.strict_slashes = False
 
