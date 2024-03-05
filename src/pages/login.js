@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({user}) => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -13,15 +13,16 @@ const Login = () => {
         // TODO: Check email and password are set before calling endpoint
 
         const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
             credentials: "include"
         };
         try {
-            const response = await fetch('api/auth/login', requestOptions);
+            const response = await fetch("api/auth/login", requestOptions);
             const responseJson = await response.json();
             if (responseJson["id"]) {
+                console.log("navigating home");
                 navigate("/"); // Redirect to the home page after login
             } else {
                 setLoginErrorMessage(responseJson["message"]);
@@ -29,7 +30,12 @@ const Login = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+
+    useEffect(() => {
+        console.log(user);
+        if(user && user.id) navigate("/");
+    });
 
     return (
         <>
@@ -38,12 +44,12 @@ const Login = () => {
                 <Box 
                     sx={{
                         marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }} ></Avatar>
+                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }} ></Avatar>
                     <Typography component="h1" variant="h5">
                         Log in
                     </Typography>
