@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Route,
   BrowserRouter as Router,
@@ -6,41 +6,41 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header/header";
 import PrivateRoute from "./components/PrivateRoute/privateRoute";
+import PublicRoute from "./components/PublicRoute/publicRoute";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
-
-const AuthContext = createContext(null);
+import { fetchUser } from "./redux/slices/userSlice";
 
 function App() {
-  const [user, setUser] = useState({});
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+  console.log("state", state);
 
   useEffect(() => {
-    fetch("api/user")
-    .then(async (response) => {
-        const userResponse = await response.json();
-        if(response.status === 200)
-        {
-          setUser(userResponse);
-        }
-    })
-    .catch((error) => console.error(error));
-  }, []);
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   return (
       <Router>
-        <Header user={user}/>
+        <Header />
         <div className="container">
           <Routes>
-            <Route path="/test" element={<PrivateRoute user={user} />}>
-              <Route path="/test" element={<Home user={user} />} />
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route exact path="/" element={<Home />} />
             </Route>
-            
-            <Route exact path="/" element={<Home user={user} />} />
-            <Route path="/login" element={<Login user={user} />} />
-            <Route path="/register" element={<Register user={user} />} />
+
+            <Route path="/login" element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+            </Route>
+
+            <Route path="/register" element={<PublicRoute />}>
+              <Route path="/register" element={<Register />} />
+            </Route>
+          
           </Routes>
         </div>
       </Router>

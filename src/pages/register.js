@@ -1,37 +1,29 @@
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
+import { authRegister } from "../redux/slices/authSlice";
 
 const Register = () => {
+    const dispatch = useDispatch();
+    const auth = useSelector((state) => state.auth);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
-    const navigate = useNavigate();
-
 
     const handleRegistration = () => {
         // TODO: Check email and password are set before calling endpoint
         // TODO: Check password and confirm password match
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-            credentials: "include"
-        };
-        return fetch('api/auth/register', requestOptions)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            if (responseJson["id"]) {
-                // Redirect to the home page after registration
-                navigate("/"); 
-            } else {
-                setRegisterErrorMessage(responseJson["message"]);
-            }
-        })
-        .catch((error) => {console.error(error);});
+        dispatch(authRegister({email, password}));
     }
+
+    useEffect(() => {
+        if(auth?.isError) {
+            setRegisterErrorMessage(auth.error?.message);
+        }
+    }, [auth])
 
     return (
         <>

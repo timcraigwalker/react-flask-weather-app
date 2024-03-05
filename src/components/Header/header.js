@@ -1,9 +1,14 @@
 import { AccountCircle } from "@mui/icons-material";
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { authLogout } from "../../redux/slices/authSlice";
 
-const Header = ({user}) => {
+const Header = () => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.data);
+
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -13,7 +18,10 @@ const Header = ({user}) => {
             headers: { "Content-Type": "application/json" }
         };
         const response = await fetch("api/auth/logout", requestOptions);
-        if(response.status === 200) navigate("/login");
+        if(response.status === 200){
+            dispatch(authLogout());
+            //navigate("/login");
+        }
     }
 
     const handleMenu = (event) => {
@@ -30,7 +38,7 @@ const Header = ({user}) => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     Weather App
                 </Typography>
-                {user && (
+                { user?.id && (
                     <div>
                     <IconButton
                         size="large"

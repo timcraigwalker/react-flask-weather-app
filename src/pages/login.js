@@ -1,9 +1,12 @@
 import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authLogin } from "../redux/slices/authSlice";
 
-const Login = ({user}) => {
-    const navigate = useNavigate();
+const Login = () => {
+    const dispatch = useDispatch();
+    const auth = useSelector((state) => state.auth);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,31 +14,14 @@ const Login = ({user}) => {
 
     const handleLogin = async () => {
         // TODO: Check email and password are set before calling endpoint
-
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-            credentials: "include"
-        };
-        try {
-            const response = await fetch("api/auth/login", requestOptions);
-            const responseJson = await response.json();
-            if (responseJson["id"]) {
-                console.log("navigating home");
-                navigate("/"); // Redirect to the home page after login
-            } else {
-                setLoginErrorMessage(responseJson["message"]);
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        dispatch(authLogin({email, password}));
     };
 
     useEffect(() => {
-        console.log(user);
-        if(user && user.id) navigate("/");
-    });
+        if(auth?.isError) {
+            setLoginErrorMessage(auth.error?.message);
+        }
+    }, [auth])
 
     return (
         <>

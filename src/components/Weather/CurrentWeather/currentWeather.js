@@ -1,8 +1,12 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box, Card, CardContent, CardHeader, CardMedia, IconButton, Typography } from "@mui/material";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFavouriteCities } from '../../../redux/slices/userFavouriteCitiesSlice';
 
-const CurrentWeather = ({weather, onFavouriteCitiesChange}) => {
+const CurrentWeather = ({weather}) => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.data);
 
     const addFavouriteCity = async () => {
         const requestOptions = {
@@ -16,11 +20,11 @@ const CurrentWeather = ({weather, onFavouriteCitiesChange}) => {
             credentials: "include"
         };
         try {
-            const response = await fetch(`api/user/${weather.user_id}/favourite_cities`, requestOptions);
-            const responseJson = await response.json();
-            console.log(responseJson);
+            const response = await fetch(`api/user/${user.id}/favourite_cities`, requestOptions);
+            if(response.ok){
+                dispatch(fetchFavouriteCities(user));
+            }
             // TODO: Show notification that favourite city was added
-            onFavouriteCitiesChange();
         } catch (error) {
             console.error(error);
         }
@@ -32,19 +36,15 @@ const CurrentWeather = ({weather, onFavouriteCitiesChange}) => {
             credentials: "include"
         };
         try {
-            const response = await fetch(`api/user/${weather.user_id}/favourite_cities/${weather.favourite_id}`, requestOptions);
-            const responseJson = await response.json();
-            console.log(responseJson);
+            const response = await fetch(`api/user/${user.id}/favourite_cities/${weather.favourite_id}`, requestOptions);
+            if(response.ok){
+                dispatch(fetchFavouriteCities(user));
+            }
             // TODO: Show notification that favourite city was removed
-
-            onFavouriteCitiesChange();
         } catch (error) {
             console.error(error);
         }
     };
-
-    /*{ !weather.favourite_id && <Button size="small" onClick={addFavouriteCity}>Add to Favourites</Button> }
-                        { weather.favourite_id && <Button size="small" onClick={removeFavouriteCity}>Remove from Favourites</Button> }*/
 
     return (
         <>
