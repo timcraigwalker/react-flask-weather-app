@@ -1,40 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import Search from "../components/Search/search";
 import { Container, CssBaseline } from "@mui/material";
-import Weather from "../components/Weather/weather";
+import { useNavigate } from "react-router-dom";
+import FavouriteCities from "../components/FavouriteCities/favouriteCities";
+import Search from "../components/Search/search";
+import SearchedCity from "../components/SearchedCity/searchedCity";
 
-const Home = () => {
-    const [currentWeather, setCurrentWeather] = useState(null);
-    const [forecast, setForecast] = useState(null);
+const Home = ({user}) => {
+    const navigate = useNavigate();
+    const [searchValues, setSearchValues] = useState(null);
+    const [favouriteCities, setFavouriteCities] = useState(null);
 
     const handleOnSearchChange = (searchData) => {
         const [latitude, longitude] = searchData.value.split(" ");
 
-        const currentWeatherFetch = fetch(`api/weather/current/${latitude}/${longitude}`);
-        const forecastFetch = fetch(`api/weather/forecast/${latitude}/${longitude}`);
-
-        Promise.all([currentWeatherFetch, forecastFetch])
-        .then(async (response) => {
-            const weatherResponse = await response[0].json();
-            const forcastResponse = await response[1].json();
-
-            if(response[0].status === 200 && response[1].status === 200)
-            {
-              setCurrentWeather({ city: searchData.label, ...weatherResponse });
-              setForecast({ city: searchData.label, ...forcastResponse });
-            }
-        })
-        .catch((error) => console.error(error));
+        setSearchValues({
+          user: user.id,
+          city: searchData.label,
+          latitude: latitude,
+          longitude: longitude
+        });
     };
-  
+
+    const handleUserFavouriteCitiesChange = (changed) => {
+      console.log(changed);
+      getUserFavouriteCities(user);
+    }
+
+    const getUserFavouriteCities = async (user) => {
+      try {
+        const favouriteCitiesResponse = await fetch(`api/user/${user.id}/favourite_cities`);
+        const favouriteCitiesResponseJson = await favouriteCitiesResponse.json();
+
+        if(favouriteCitiesResponse.status === 200){
+          setFavouriteCities(favouriteCitiesResponseJson);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    useEffect(() => {
+      if(!user || !user.id) navigate("/login");
+      if(!favouriteCities) getUserFavouriteCities(user);
+      // TODO: find out why this is looping
+    }, [favouriteCities, navigate, user]);
 
     return (
       <>
         <Container component="main" maxWidth="xl">
           <CssBaseline />
           <Search onSearchChange={handleOnSearchChange}/>
-          {currentWeather && forecast && <Weather {...{currentWeather, forecast}} />}
+          { searchValues  && <SearchedCity searchValues={searchValues} />}
+          { favouriteCities  && <FavouriteCities favouriteCities={favouriteCities} onFavouriteCitiesChange={handleUserFavouriteCitiesChange} />}
         </Container>
       </>
     );

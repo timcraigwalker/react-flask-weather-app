@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Typography } from "@mui/material";
 import Weather from "../Weather/weather";
 
-const FavouriteCities = ({favouriteCities}) => {
+const FavouriteCities = ({favouriteCities, onFavouriteCitiesChange}) => {
 
     return (
         <>
@@ -16,7 +16,7 @@ const FavouriteCities = ({favouriteCities}) => {
                     }}
                 >
                     { favouriteCities.map((favouriteCity) => (
-                        <Weather {...favouriteCity} />
+                        <Weather {...favouriteCity} onFavouriteCitiesChange={onFavouriteCitiesChange} />
                     ))}
                 </Container>
             </Box>

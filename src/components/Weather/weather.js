@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CurrentWeather from "./CurrentWeather/currentWeather";
 import WeatherForecast from "./WeatherForecast/weatherForecast";
 
-const Weather = ({user, city, latitude, longitude, id}) => {
+const Weather = ({user, city, latitude, longitude, id, onFavouriteCitiesChange}) => {
     const [weather, setWeather] = useState(null);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const Weather = ({user, city, latitude, longitude, id}) => {
 
     return (
         <Box marginTop={1} width="360px">
-            { weather && weather.current  && <CurrentWeather weather={weather} />}
+            { weather && weather.current  && <CurrentWeather weather={weather} onFavouriteCitiesChange={onFavouriteCitiesChange} />}
             { weather && weather.forecast && <WeatherForecast weather={weather} />}
         </Box>
     )

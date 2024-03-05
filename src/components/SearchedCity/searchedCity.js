@@ -3,8 +3,6 @@ import Weather from "../Weather/weather";
 
 const SearchedCity = ({searchValues}) => {
 
-    console.log(searchValues);
-
     return (
         <>
             <Box marginTop={1}>
